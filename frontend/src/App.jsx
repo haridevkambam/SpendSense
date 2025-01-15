@@ -4,11 +4,13 @@ import LoginPage from "./pages/LoginPage.jsx"
 import SignUpPage from "./pages/SignUpPage.jsx"
 import TransactionPage from "./pages/TransactionPage.jsx"
 import NotFoundPage from "./pages/NotFoundPage.jsx"
+import Header from "./components/ui/Header.jsx"
 
 function App() {
-
+  const authUser = true;
   return (
     <>
+      {authUser && <Header />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
