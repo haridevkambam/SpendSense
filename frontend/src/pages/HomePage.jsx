@@ -40,7 +40,7 @@ const HomePage = () => {
   });
 
   useEffect(() => {
-    if(data?.categoryStatistics){
+    if (data?.categoryStatistics) {
       const categories = data.categoryStatistics.map(cat => cat.category);
       const amounts = data.categoryStatistics.map(cat => cat.totalAmount);
 
@@ -48,15 +48,15 @@ const HomePage = () => {
       const borderColor = []
 
       categories.forEach(category => {
-        if(category === "saving"){
+        if (category === "saving") {
           backgroundColor.push("rgba(75, 192, 192")
           borderColor.push("rgba(75, 192, 192")
         }
-        else if(category === "expense"){
+        else if (category === "expense") {
           backgroundColor.push("rgba(255, 99, 132")
           borderColor.push("rgba(255, 99, 132")
         }
-        else if(category === "investment"){
+        else if (category === "investment") {
           backgroundColor.push("rgba(54, 162, 235")
           borderColor.push("rgba(54, 162, 235")
         }
@@ -106,9 +106,11 @@ const HomePage = () => {
           {loading && <div className='w-6 h-6 border-t-2 border-b-2 mx-2 rounded-full animate-spin'></div>}
         </div>
         <div className='flex flex-wrap w-full justify-center items-center gap-6'>
-          <div className='h-[330px] w-[330px] md:h-[360px] md:w-[360px]  '>
-            <Doughnut data={chartData} />
-          </div>
+          {data?.categoryStatistics.length > 0 && (
+            <div className='h-[330px] w-[330px] md:h-[360px] md:w-[360px]  '>
+              <Doughnut data={chartData} />
+            </div>
+          )}
 
           <TransactionForm />
         </div>
