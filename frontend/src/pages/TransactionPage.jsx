@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_TRANSACTION } from "../graphql/queries/transaction.query.js";
 import { UPDATE_TRANSACTION } from "../graphql/mutations/transaction.mutation.js";
+import toast from "react-hot-toast";
 
 const TransactionPage = () => {
 
@@ -11,7 +12,9 @@ const TransactionPage = () => {
   const { data, loading, error } = useQuery(GET_TRANSACTION, {
     variables: { id }
   });
-  const [updateTransaction, { loading: loadingUpdate }] = useMutation(UPDATE_TRANSACTION)
+  const [updateTransaction, { loading: loadingUpdate }] = useMutation(UPDATE_TRANSACTION, {
+    refetchQueries: ["GetTransaction", "GetTransactionStatistics"]
+  })
 
   const [formData, setFormData] = useState({
     description: data?.transaction.description || "",
@@ -42,13 +45,9 @@ const TransactionPage = () => {
       await updateTransaction({
         variables: {
           input: {
-            _id: id,
-            description: formData.description,
-            paymentType: formData.paymentType,
-            category: formData.category,
-            amount: amount,
-            location: formData.location,
-            date: formData.date,
+            ...formData,
+            amount,
+            transactionId: id
           }
         }
       })

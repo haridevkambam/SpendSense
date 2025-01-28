@@ -22,7 +22,7 @@ const Card = ({ transaction }) => {
     let { _id, description, paymentType, category, amount, location, date } = transaction;
 
     const [deleteTransaction, { loading }] = useMutation(DELETE_TRANSACTION, {
-        refetchQueries: ["GetTransactions"]
+        refetchQueries: ["GetTransactions", "GetTransactionStatistics"]
     })
 
     const cardClass = categoryColorMap[category];
@@ -50,7 +50,7 @@ const Card = ({ transaction }) => {
                     <h2 className='text-lg font-bold text-white'>{category}</h2>
                     <div className='flex items-center gap-2'>
                         {!loading && <FaTrash className={"cursor-pointer"} onClick={handleDelete} />}
-                        {loading && <div className="h-4 w-4 animate-pulse rounded-md bg-white"></div>}
+                        {loading && <div className="w-6 h-6 border-t-2 border-b-2  rounded-full animate-spin"></div>}
                         <Link to={`/transaction/${_id}`}>
                             <HiPencilAlt className='cursor-pointer' size={20} />
                         </Link>

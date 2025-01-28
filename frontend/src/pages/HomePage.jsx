@@ -7,34 +7,79 @@ import TransactionForm from "../components/TransactionForm";
 import { MdLogout } from "react-icons/md";
 import toast from "react-hot-toast";
 import { LOGOUT } from "../graphql/mutations/user.mutation";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_TRANSACTION_STATISTICS } from "../graphql/queries/transaction.query";
+import { useEffect, useState } from "react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const HomePage = () => {
-  const chartData = {
-    labels: ["Saving", "Expense", "Investment"],
+
+  const { data } = useQuery(GET_TRANSACTION_STATISTICS);
+
+  const [logout, { loading, client }] = useMutation(LOGOUT, {
+    refetchQueries: ["GetAuthenticatedUser"],
+  });
+
+  const [chartData, setChartData] = useState({
+    labels: [],
     datasets: [
       {
-        label: "%",
-        data: [13, 8, 3],
-        backgroundColor: ["rgba(75, 192, 192)", "rgba(255, 99, 132)", "rgba(54, 162, 235)"],
-        borderColor: ["rgba(75, 192, 192)", "rgba(255, 99, 132)", "rgba(54, 162, 235, 1)"],
+        label: "$",
+        data: [],
+        backgroundColor: [],
+        borderColor: [],
         borderWidth: 1,
         borderRadius: 30,
         spacing: 10,
         cutout: 130,
       },
     ],
-  };
-
-  const [logout, { loading }] = useMutation(LOGOUT, {
-    refetchQueries: ["GetAuthenticatedUser"],
   });
+
+  useEffect(() => {
+    if(data?.categoryStatistics){
+      const categories = data.categoryStatistics.map(cat => cat.category);
+      const amounts = data.categoryStatistics.map(cat => cat.totalAmount);
+
+      const backgroundColor = []
+      const borderColor = []
+
+      categories.forEach(category => {
+        if(category === "saving"){
+          backgroundColor.push("rgba(75, 192, 192")
+          borderColor.push("rgba(75, 192, 192")
+        }
+        else if(category === "expense"){
+          backgroundColor.push("rgba(255, 99, 132")
+          borderColor.push("rgba(255, 99, 132")
+        }
+        else if(category === "investment"){
+          backgroundColor.push("rgba(54, 162, 235")
+          borderColor.push("rgba(54, 162, 235")
+        }
+
+      })
+      setChartData(prev => ({
+        labels: categories,
+        datasets: [
+          {
+            ...prev.datasets[0],
+            data: amounts,
+            backgroundColor: backgroundColor,
+            borderColor: borderColor,
+          },
+        ],
+      }))
+    }
+  }, [data])
+
 
   const handleLogout = async () => {
     try {
       await logout();
+      client.resetStore(); // Clear the cache
+      toast.success("Logged out successfully");
     } catch (error) {
       console.error("Error Logging out: ", error);
       toast.error(error.message);
