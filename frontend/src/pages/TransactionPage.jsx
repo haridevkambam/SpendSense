@@ -54,7 +54,7 @@ const TransactionPage = () => {
       toast.success("Transaction updated successfully");
     } catch (error) {
       toast.error("Failed to update transaction", error.message);
-      console.error("Error updating transaction: ", error);
+      console.error("Error updating transaction: ", error.message);
     }
   };
   const handleInputChange = (e) => {

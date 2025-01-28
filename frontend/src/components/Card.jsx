@@ -8,7 +8,8 @@ import { Link } from "react-router-dom";
 import { formatDate } from "../utils/formatDate";
 import toast from "react-hot-toast";
 import { DELETE_TRANSACTION } from "../graphql/mutations/transaction.mutation";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_AUTHENTICATED_USER } from "../graphql/queries/user.query";
 
 const categoryColorMap = {
     saving: "from-green-700 to-green-400",
@@ -18,6 +19,8 @@ const categoryColorMap = {
 };
 
 const Card = ({ transaction }) => {
+
+    const { data: authUserData } = useQuery(GET_AUTHENTICATED_USER);
 
     let { _id, description, paymentType, category, amount, location, date } = transaction;
 
@@ -75,7 +78,7 @@ const Card = ({ transaction }) => {
                 <div className='flex justify-between items-center'>
                     <p className='text-xs text-black font-bold'>{formattedDate}</p>
                     <img
-                        src={"https://tecdn.b-cdn.net/img/new/avatars/2.webp"}
+                        src={authUserData?.authUser.profilePicture}
                         className='h-8 w-8 border rounded-full'
                         alt=''
                     />
