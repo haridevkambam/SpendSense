@@ -22,7 +22,7 @@ import job from "./cron.js";
 dotenv.config();
 configurePassport();
 
-job.start();
+// job.start();
 
 const __dirname = path.resolve();
 
